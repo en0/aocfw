@@ -14,9 +14,10 @@ setup(
     author="Ian Laird",
     author_email="irlaird@gmail.com",
     url="https://github.com/en0/aocfw",
-    packages=["pyioc3"],
+    packages=["aocfw"],
+    install_requires=["pyioc3"],
     classifiers=[
-        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.9",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
