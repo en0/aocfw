@@ -10,4 +10,5 @@ class IntegerParser(IParser):
 
 class StringParser(IParser):
     def parse(self, data: IO) -> Iterable[str]:
-        return map(str, data)
+        return map(lambda x: str(x).rstrip("\n"), data)
+
