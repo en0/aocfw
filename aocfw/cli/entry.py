@@ -1,9 +1,3 @@
-"""
-curl 'https://adventofcode.com/2021/day/7/input' \
-  -H 'authority: adventofcode.com' \
-  -H 'cookie: session=53616c7465645f5f11d67608931277518d0848922c1b69152946d213700a7ae4a40d5c0742944af0e3c5f9ffb419de71;'\
-"""
-
 from argparse import ArgumentParser, _SubParsersAction
 from typing import Callable
 
