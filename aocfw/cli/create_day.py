@@ -1,123 +1,93 @@
-import requests
 from os import mkdir, path
-from argparse import _SubParsersAction, ArgumentParser
-from configparser import ConfigParser
+from argparse import _SubParsersAction, ArgumentParser, Namespace
 from datetime import datetime
+from typing import Optional, List
 
-from .entry import EntryPoint
-
-
-def get_opts(sp: _SubParsersAction):
-    ap: ArgumentParser = sp.add_parser(
-        "create-day",
-        help="Create a new day from templates",
-    )
-    ap.add_argument(
-        "--day",
-        default=datetime.now().day,
-        required=False,
-        help="The day we are talking about. Default: today",
-        type=int,
-    )
-    ap.add_argument(
-        "PATH",
-        default=None,
-        help="Specify the directory name. Default: the number of today",
-        nargs='?'
-    )
-    return ap
+from .entry_base import EntryPointBase
 
 
-def main(opts):
-    cp = ConfigParser()
-    cp.read(opts.config)
-    year = cp.get("calendar", "year")
-    dir_name = opts.PATH or f"{opts.day:02}"
+class CreateDayEntryPoint(EntryPointBase):
 
-    mkdir(dir_name)
+    _dir_name: str
 
-    with open(path.join(dir_name, "p1.py"), "w") as fd:
-        fd.writelines([
-            "from typing import Iterable\n",
-            "from aocfw import SolutionBase\n",
-            "\n",
-            "\n",
-            "class Solution(SolutionBase):\n",
-            "    def solve(self, data: Iterable[int]) -> int:\n",
-            "        raise NotImplementedError()\n",
-            "\n",
-            "\n",
-            "if __name__ == '__main__':\n",
-            "    Solution.run(source='input.txt')\n",
-            "\n",
+    @staticmethod
+    def argdef(sp: _SubParsersAction) -> ArgumentParser:
+        ap: ArgumentParser = sp.add_parser(
+            "create-day",
+            help="Create a new day from templates",
+        )
+        ap.add_argument(
+            "--day",
+            default=datetime.now().day,
+            required=False,
+            help="The day we are talking about. Default: today",
+            type=int,
+        )
+        ap.add_argument(
+            "PATH",
+            default=None,
+            help="Specify the directory name. Default: the number of today",
+            nargs='?'
+        )
+        return ap
+
+    def run(self) -> Optional[int]:
+        self._mkdir(self.opts.PATH or f"{self.opts.day:02}")
+        self._write_puzzle(1)
+        self._write_puzzle(2)
+        self._write_out("sample.txt", "SAMPLE DATA HERE")
+        self._write_input_file()
+        self.log.info("Don't forget to put something in %s", path.join(self._dir_name, "sample.txt"))
+
+    def _mkdir(self, dir_name: str) -> None:
+        self._dir_name = dir_name
+        mkdir(self._dir_name)
+
+    def _write_input_file(self) -> None:
+        try:
+            input = self.aoc_client.get_input(self.opts.day, self.config.get_year())
+            self._write_out("input.txt", input)
+        except AOCClientError as err:
+            self.log.exception("Failed to download input file")
+            self._write_out("input.txt", "INPUT HERE")
+
+    def _write_puzzle(self, part: int) -> None:
+        self._write_out(f"p{part}.py", lines=[
+            "from typing import Iterable",
+            "from aocfw import SolutionBase",
+            "",
+            "",
+            "class Solution(SolutionBase):",
+            "    def solve(self, data: Iterable[int]) -> int:",
+            "        raise NotImplementedError()",
+            "",
+            "",
+            "if __name__ == '__main__':",
+            "    Solution.run(source='input.txt')",
+            "",
+        ])
+        self._write_out(f"p{part}_test.py", lines=[
+            "from unittest import TestCase, main",
+            "from aocfw import TestCaseMixin",
+            f"from p{part} import Solution",
+            "",
+            "",
+            "class SolutionTests(TestCase, TestCaseMixin):",
+            "",
+            "    solution = Solution",
+            "    source = 'sample.txt'",
+            "    given = None",
+            "",
+            "",
+            "if __name__ == '__main__':",
+            "    main()",
+            "",
         ])
 
-    with open(path.join(dir_name, "p2.py"), "w") as fd:
-        fd.writelines([
-            "from typing import Iterable\n",
-            "from aocfw import SolutionBase\n",
-            "\n",
-            "\n",
-            "class Solution(SolutionBase):\n",
-            "    def solve(self, data: Iterable[int]) -> int:\n",
-            "        raise NotImplementedError()\n",
-            "\n",
-            "\n",
-            "if __name__ == '__main__':\n",
-            "    Solution.run(source='input.txt')\n",
-            "\n",
-        ])
+    def _write_out(self, file_name: str, data: any = None, lines: List[str] = None) -> None:
+        with open(path.join(self._dir_name, file_name), "w") as fd:
+            if data is not None:
+                fd.write(data)
+            elif lines is not None:
+                fd.write("\n".join(lines))
 
-    with open(path.join(dir_name, "p1_test.py"), "w") as fd:
-        fd.writelines([
-            "from unittest import TestCase, main\n",
-            "from aocfw import TestCaseMixin\n",
-            "from p1 import Solution\n",
-            "\n",
-            "\n",
-            "class SolutionTests(TestCase, TestCaseMixin):\n",
-            "\n",
-            "    solution = Solution\n",
-            "    source = 'sample.txt'\n",
-            "    given = None\n",
-            "\n",
-            "\n",
-            "if __name__ == '__main__':\n",
-            "    main()\n",
-            "\n",
-        ])
-
-    with open(path.join(dir_name, "p2_test.py"), "w") as fd:
-        fd.writelines([
-            "from unittest import TestCase, main\n",
-            "from aocfw import TestCaseMixin\n",
-            "from p2 import Solution\n",
-            "\n",
-            "\n",
-            "class SolutionTests(TestCase, TestCaseMixin):\n",
-            "\n",
-            "    solution = Solution\n",
-            "    source = 'sample.txt'\n",
-            "    given = None\n",
-            "\n",
-            "\n",
-            "if __name__ == '__main__':\n",
-            "    main()\n",
-            "\n",
-        ])
-
-    with open(path.join(dir_name, "sample.txt"), "w") as fd:
-        fd.write("PUT SAMPLE HERE")
-
-    url = f"https://adventofcode.com/{year}/day/{opts.day}/input"
-    result = requests.get(url, cookies={"session": cp.get("creds", "token")})
-    if result.status_code == 200:
-        with open(path.join(dir_name, "input.txt"), "w") as fd:
-            fd.write(result.text)
-    else:
-        print("Not able to download input data.")
-
-    print("Don't forget to put something in sample.txt")
-
-
-EntryPoint.register(get_opts, main)

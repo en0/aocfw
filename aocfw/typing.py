@@ -18,3 +18,33 @@ class ISolution(ABC):
     @abstractmethod
     def solve(self, data: Iterable[any]) -> any:
         ...
+
+
+class IConfiguration(ABC):
+
+    @abstractmethod
+    def new(self, path: str) -> None:
+        ...
+
+    @abstractmethod
+    def get_session_token(self) -> str:
+        ...
+
+    @abstractmethod
+    def set_session_token(self, value: str) -> None:
+        ...
+
+    @abstractmethod
+    def get_year(self) -> int:
+        ...
+
+    @abstractmethod
+    def set_year(self, value: int) -> None:
+        ...
+
+
+class IAOCClient(ABC):
+
+    @abstractmethod
+    def get_input(self, day, year):
+        ...

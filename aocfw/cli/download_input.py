@@ -1,45 +1,39 @@
 import requests
 from argparse import _SubParsersAction, ArgumentParser
-from configparser import ConfigParser
 from datetime import datetime
+from typing import Optional
 
-from .entry import EntryPoint
-
-
-def get_opts(sp: _SubParsersAction):
-    ap: ArgumentParser = sp.add_parser(
-        "download-input",
-        help="Download the given day's input and save it to a file."
-    )
-    ap.add_argument(
-        "--day",
-        default=datetime.now().day,
-        required=False,
-        help="The day of the input to download. Default: today",
-        type=int,
-    )
-    ap.add_argument(
-        "PATH",
-        default="input.txt",
-        help="The path to save the input data.",
-        nargs='?'
-    )
-    return ap
+from .entry_base import EntryPointBase
+from ..errors import AOCClientError
 
 
-def main(opts):
-    cp = ConfigParser()
-    cp.read(opts.config)
-    year = cp.get("calendar", "year")
+class DownloadInputEntryPoint(EntryPointBase):
 
-    url = f"https://adventofcode.com/{year}/day/{opts.day}/input"
-    result = requests.get(url, cookies={"session": cp.get("creds", "token")})
-    if result.status_code == 200:
-        with open(opts.PATH, "w") as fd:
-            fd.write(result.text)
-    else:
-        print("Oops! Something is not right.")
-        print(result.text)
+    @staticmethod
+    def argdef(sp: _SubParsersAction) -> ArgumentParser:
+        ap: ArgumentParser = sp.add_parser(
+            "download-input",
+            help="Download the given day's input and save it to a file."
+        )
+        ap.add_argument(
+            "--day",
+            default=datetime.now().day,
+            required=False,
+            help="The day of the input to download. Default: today",
+            type=int,
+        )
+        ap.add_argument(
+            "PATH",
+            default="input.txt",
+            help="The path to save the input data.",
+            nargs='?'
+        )
+        return ap
 
-
-EntryPoint.register(get_opts, main)
+    def run(self) -> Optional[int]:
+        try:
+            input = self.aoc_client.get_input(self.opts.day, self.config.get_year())
+            with open(self.opts.PATH, "w") as fd:
+                fd.write(input)
+        except AOCClientError as err:
+            self.log.exception("Failed to download input file")

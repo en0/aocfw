@@ -1,38 +1,30 @@
 from argparse import _SubParsersAction, ArgumentParser
-from configparser import ConfigParser
+from typing import Optional
 
-from .entry import EntryPoint
-
-
-def get_opts(sp: _SubParsersAction):
-    ap: ArgumentParser = sp.add_parser(
-        "create-config",
-        help="Create a new configuration file."
-    )
-    ap.add_argument(
-        "PATH",
-        default=".aocfwrc",
-        nargs='?',
-        help="The path to the configuration file to create.",
-        type=str,
-    )
-    return ap
+from .entry_base import EntryPointBase
 
 
-def main(opts):
-    cp = ConfigParser()
-    cp.add_section("creds")
-    cp.add_section("calendar")
+class CreateConfigEntryPoint(EntryPointBase):
 
-    val = input("What is your session cookie? ")
-    cp.set("creds", "token", val)
+    @staticmethod
+    def argdef(sp: _SubParsersAction) -> ArgumentParser:
+        ap: ArgumentParser = sp.add_parser(
+            "create-config",
+            help="Create a new configuration file."
+        )
+        ap.add_argument(
+            "PATH",
+            default=".aocfwrc",
+            nargs='?',
+            help="The path to the configuration file to create.",
+            type=str,
+        )
+        return ap
 
-    val = input("What year are we talking about? ")
-    cp.set("calendar", "year", val)
-
-    with open(opts.PATH, "w") as fd:
-        cp.write(fd)
-
-    print(f"New config file: {opts.PATH}")
-
-EntryPoint.register(get_opts, main)
+    def run(self) -> Optional[int]:
+        self.config.new(self.opts.PATH)
+        val = input("What is your session cookie? ")
+        self.config.set_session_token(val)
+        val = input("What year are we talking about? ")
+        self.config.set_year(val)
+        self.log.info("New config file %s", self.opts.PATH)
