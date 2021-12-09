@@ -24,7 +24,6 @@ class SolutionBase(ISolution):
     def solve(self, data: Iterable[any]) -> any:
         ...
 
-
     def _load_and_parse(self, **kwargs) -> Iterable[any]:
         def callback(data):
             parser = self.get(IParser)

@@ -66,11 +66,13 @@ def main():
     from .create_day import CreateDayEntryPoint
     from .download_input import DownloadInputEntryPoint
     from .submit_answer import SubmitAnswerEntryPoint
+    from .run_solution import RunSolutionEntryPoint
 
     ep = EntryPoint()
     ep.add(CreateConfigEntryPoint)
     ep.add(CreateDayEntryPoint)
     ep.add(DownloadInputEntryPoint)
     ep.add(SubmitAnswerEntryPoint)
+    ep.add(RunSolutionEntryPoint)
     return ep.run()
 

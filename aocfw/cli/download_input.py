@@ -1,4 +1,3 @@
-import requests
 from argparse import _SubParsersAction, ArgumentParser
 from datetime import datetime
 from typing import Optional
