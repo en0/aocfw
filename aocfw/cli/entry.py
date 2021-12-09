@@ -65,10 +65,12 @@ def main():
     from .create_config import CreateConfigEntryPoint
     from .create_day import CreateDayEntryPoint
     from .download_input import DownloadInputEntryPoint
+    from .submit_answer import SubmitAnswerEntryPoint
 
     ep = EntryPoint()
     ep.add(CreateConfigEntryPoint)
     ep.add(CreateDayEntryPoint)
     ep.add(DownloadInputEntryPoint)
+    ep.add(SubmitAnswerEntryPoint)
     return ep.run()
 

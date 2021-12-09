@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="aocfw",
-    version="1.0.2",
+    version="1.0.3",
     description="Advent Of Code Python Framework",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -15,7 +15,7 @@ setup(
     author_email="irlaird@gmail.com",
     url="https://github.com/en0/aocfw",
     packages=["aocfw", "aocfw.cli", "aocfw.client"],
-    install_requires=["pyioc3", "requests"],
+    install_requires=["pyioc3", "requests", "beautifulsoup4"],
     entry_points={"console_scripts": ['aocfw=aocfw.cli.entry:main']},
     classifiers=[
         "Programming Language :: Python :: 3.9",

@@ -46,5 +46,9 @@ class IConfiguration(ABC):
 class IAOCClient(ABC):
 
     @abstractmethod
-    def get_input(self, day, year):
+    def get_input(self, day: int, year: int) -> str:
+        ...
+
+    @abstractmethod
+    def submit_answer(self, day: int, year: int, part: int, value: any) -> str:
         ...
