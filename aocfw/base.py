@@ -62,6 +62,11 @@ class SolutionBase(ISolution):
         return cls.get(cls)._load_and_parse(**kwargs)
 
     @classmethod
+    def new(cls, **kwargs):
+        cls._bind()
+        return cls.get(cls)
+
+    @classmethod
     def _bind(cls):
         bindings = cls._bindings.copy()
         bindings.update(cls.bindings)
