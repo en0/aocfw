@@ -1,6 +1,7 @@
 from abc import abstractmethod
 from typing import Iterable, Dict, Type, TypeVar, IO
 from pyioc3 import StaticContainerBuilder, Container
+from timeit import default_timer
 
 from .loaders import AutoLoader
 from .parsers import IntegerParser
@@ -37,7 +38,8 @@ class SolutionBase(ISolution):
         def callback(data):
             parser = self.get(IParser)
             _data = parser.parse(data)
-            return self.solve(_data)
+            ans = self.solve(_data)
+            return ans
         loader = self.get(ILoader)
         ans = loader.read(callback=callback, **kwargs)
         return ans
@@ -48,8 +50,11 @@ class SolutionBase(ISolution):
 
     @classmethod
     def run(cls, **kwargs) -> None:
+        start = default_timer()
         ans = cls.check(**kwargs)
-        print(f"Answer: {ans}")
+        stop = default_timer()
+        print(f"Found Answer: {ans}")
+        print(f"Elapsed Time: {stop - start:.4f} seconds")
 
     @classmethod
     def check(cls, **kwargs) -> any:

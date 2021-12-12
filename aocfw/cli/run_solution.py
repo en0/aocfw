@@ -9,7 +9,7 @@ class RunSolutionEntryPoint(EntryPointBase):
     @staticmethod
     def argdef(sp: _SubParsersAction) -> ArgumentParser:
         ap: ArgumentParser = sp.add_parser(
-            "experimental-run-solution",
+            "run-solution",
             help="Download the given day's input and save it to a file."
         )
         ap.add_argument(
