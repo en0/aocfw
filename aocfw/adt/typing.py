@@ -1,8 +1,12 @@
 from abc import abstractmethod
-from typing import Generic, TypeVar, Hashable, Iterable, Optional, Union
-
+from typing import Generic, TypeVar, Hashable, Iterable, Optional, Union, NamedTuple
 
 T_VECTOR = TypeVar("T_VECTOR", bound=Hashable)
+
+
+class IntVector2(NamedTuple):
+    x: int
+    y: int
 
 
 class IGraph(Generic[T_VECTOR]):
