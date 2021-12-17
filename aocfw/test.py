@@ -1,4 +1,6 @@
-from typing import Type, IO
+from typing import Type, IO, List, Iterable
+from contextlib import contextmanager
+
 from .typing import ISolution
 
 
@@ -9,6 +11,16 @@ class TestCaseMixin:
     sample: IO = None
     given: any = None
     solution: Type[ISolution] = None
+
+    @contextmanager
+    def context_sample(self, sample: List[str]) -> Iterable[any]:
+        _source, self.source, _sample = self.source, None, self.sample
+        try:
+            self.sample = StringIO("\n".join(sample))
+            yield self.get_parsed_data()
+        finally:
+            self.sample = _sample
+            self.source = _source
 
     def get_source_args(self) -> dict:
         """Gets the correct source arguments based on test setup.
