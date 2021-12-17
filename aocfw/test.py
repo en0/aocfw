@@ -1,5 +1,6 @@
 from typing import Type, IO, List, Iterable
 from contextlib import contextmanager
+from io import StringIO
 
 from .typing import ISolution
 
