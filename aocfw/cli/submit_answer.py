@@ -18,7 +18,7 @@ class SubmitAnswerEntryPoint(EntryPointBase):
             "--day",
             default=datetime.now().day,
             required=False,
-            help="The day of the input to download. Default: today",
+            help="The day to submit. Default: today",
             type=int,
         )
         ap.add_argument(

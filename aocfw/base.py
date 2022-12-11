@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from logging import Logger, getLogger
 from typing import Iterable, Dict, Type, TypeVar, IO
 from pyioc3 import StaticContainerBuilder, Container
 from timeit import default_timer
@@ -19,6 +20,7 @@ class SolutionBase(ISolution):
         IParser: IntegerParser,
     }
 
+    log: Logger = getLogger("Solution")
     bindings: Dict[Type, Type] = {}
 
     @abstractmethod

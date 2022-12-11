@@ -67,6 +67,7 @@ def main():
     from .download_input import DownloadInputEntryPoint
     from .submit_answer import SubmitAnswerEntryPoint
     from .run_solution import RunSolutionEntryPoint
+    from .test_solution import TestSolutionEntryPoint
 
     ep = EntryPoint()
     ep.add(CreateConfigEntryPoint)
@@ -74,5 +75,6 @@ def main():
     ep.add(DownloadInputEntryPoint)
     ep.add(SubmitAnswerEntryPoint)
     ep.add(RunSolutionEntryPoint)
+    ep.add(TestSolutionEntryPoint)
     return ep.run()
 

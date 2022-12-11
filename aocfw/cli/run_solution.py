@@ -10,7 +10,7 @@ class RunSolutionEntryPoint(EntryPointBase):
     def argdef(sp: _SubParsersAction) -> ArgumentParser:
         ap: ArgumentParser = sp.add_parser(
             "run-solution",
-            help="Download the given day's input and save it to a file."
+            help="Run the given day's solution."
         )
         ap.add_argument(
             "--auto-submit",
@@ -31,6 +31,13 @@ class RunSolutionEntryPoint(EntryPointBase):
             required=True,
             type=int,
         )
+        ap.add_argument(
+            "--source",
+            help="Specify an alternate source file.",
+            required=False,
+            default="input.txt",
+            type=str,
+        )
         return ap
 
     def run(self) -> Optional[int]:
@@ -46,7 +53,7 @@ class RunSolutionEntryPoint(EntryPointBase):
         sys.path.insert(0, '')
         module = import_module(mod)
         solution = getattr(module, "Solution")
-        ans = solution.check(source="input.txt")
+        ans = solution.check(source=self.opts.source)
         self.log.info("Answer: %s", ans)
 
         chdir(pwd)
