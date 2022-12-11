@@ -5,7 +5,7 @@ from pyioc3 import StaticContainerBuilder, Container
 from timeit import default_timer
 
 from .loaders import AutoLoader
-from .parsers import IntegerParser
+from .parsers import StringParser
 from .typing import IParser, ILoader, ISolution
 
 
@@ -17,7 +17,7 @@ class SolutionBase(ISolution):
     _ioc: Container = None
     _bindings = {
         ILoader: AutoLoader,
-        IParser: IntegerParser,
+        IParser: StringParser,
     }
 
     log: Logger = getLogger("Solution")
