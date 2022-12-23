@@ -94,3 +94,24 @@ class SolutionTest(TestCase, TestCaseMixin):
 if __name__ == "__main__":
     main()
 ```
+
+## LivePlot
+
+LivePlot runs a sub-process to plot metrics.
+
+```python
+from aocfw import SolutionBase
+from aocfw.utils import LivePlot
+
+
+class Solution(SolutionBase[int, int]):
+    def solve(self, data) -> int:
+        plot = LivePlot(lambda count, length: (count, [("len", length)]))
+        plot.start()
+        for i, dat in enumerate(data):
+            plot.enqueue(count=i, length=len(dat))
+
+
+if __name__ == "__main__":
+    Solution.run(source="./input.txt")
+```

@@ -33,6 +33,7 @@ class CreateDayEntryPoint(EntryPointBase):
 
     def run(self) -> Optional[int]:
         self._mkdir(self.opts.PATH or f"{self.opts.day:02}")
+        self._write_parser()
         self._write_puzzle(1)
         self._write_puzzle(2)
         self._write_out("sample.txt", "SAMPLE DATA HERE")
@@ -42,6 +43,17 @@ class CreateDayEntryPoint(EntryPointBase):
     def _mkdir(self, dir_name: str) -> None:
         self._dir_name = dir_name
         mkdir(self._dir_name)
+
+    def _write_parser(self) -> None:
+        self._write_out("parser.py", lines=[
+            r"from typing import IO, Iterable",
+            r"from aocfw import IParser",
+            r"",
+            r"",
+            r"class Parser(IParser):",
+            r"    def parse(self, data: IO) -> Iterable[str]:",
+            r"        return map(lambda x: str(x).rstrip('\n'), data)",
+        ])
 
     def _write_input_file(self) -> None:
         try:
@@ -54,10 +66,14 @@ class CreateDayEntryPoint(EntryPointBase):
     def _write_puzzle(self, part: int) -> None:
         self._write_out(f"p{part}.py", lines=[
             "from typing import Iterable",
-            "from aocfw import SolutionBase",
+            "from aocfw import SolutionBase, IParser",
+            "from parser import Parser",
             "",
             "",
             "class Solution(SolutionBase):",
+            "",
+            "    bindings = {IParser: Parser}",
+            "",
             "    def solve(self, data: Iterable[int]) -> int:",
             "        raise NotImplementedError()",
             "",

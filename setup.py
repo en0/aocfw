@@ -7,14 +7,15 @@ with open("README.md", "r") as fh:
 
 setup(
     name="aocfw",
-    version="2.0.0",
+    version="2.0.1",
     description="Advent Of Code Python Framework",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="Ian Laird",
     author_email="irlaird@gmail.com",
     url="https://github.com/en0/aocfw",
-    packages=["aocfw", "aocfw.cli", "aocfw.client", "aocfw.adt"],
+    packages=["aocfw", "aocfw.cli", "aocfw.client", "aocfw.adt", "aocfw.utils"],
+    extras_require={"plot": ["matplotlib==3.6.2"]},
     install_requires=["pyioc3", "requests", "beautifulsoup4"],
     entry_points={"console_scripts": ['aocfw=aocfw.cli.entry:main']},
     classifiers=[
